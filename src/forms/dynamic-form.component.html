@@ -1,12 +1,14 @@
 <div>
-  <h5>Form</h5>
+  <h3>Form</h3>
   <form  *ngIf="form" (ngSubmit)="onSubmit()" 
          [formGroup]="form">
-    <div *ngFor="let question of questions" 
+    <ion-list *ngFor="let question of questions" 
          class="form-row">
-      <df-question [question]="question" 
-                   [form]="form"></df-question>
-    </div>
+        <ion-item>
+          <df-question [question]="question" 
+                       [form]="form"></df-question>
+        </ion-item>
+    </ion-list>
     <div class="form-row">
       <button type="submit" 
               [disabled]="!form.valid">Save</button>

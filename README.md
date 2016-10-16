@@ -2,20 +2,52 @@
 
 This is the client to the [server program](http://www.joshmorony.com/creating-role-based-authentication-with-passport-in-ionic-2-part-1/) created by Ionic 2 guru Josh Morony.
 
+## Creating an Ionic model driven form
+
+The items are in a form that begins in dynamic-form.component.html.
+
+```
+<form  *ngIf="form" (ngSubmit)="onSubmit()" 
+  [formGroup]="form">
+  <ion-list *ngFor="let question of questions" 
+    class="form-row">
+    <ion-item>
+      <df-question [question]="question" 
+        [form]="form"></df-question>
+```
+
+Then, in the dynamic-form-question.component.html, we have the inputs:
+```
+<div [formGroup]="form">
+  <ion-label [attr.for]="question.key">{{question.label}}</ion-label>
+  <div [ngSwitch]="question.controlType">
+    <ion-input *ngSwitchCase="'textbox'"></ion-input>
+```
+
+The default inputs need some work.
+The border points out how the native input elements don't match the Ionic styles, 
+but the form from the demo is working now.
+
+Next we can either go deeper into the validation, 
+or create a nested form example to create the model for the dynaforms.
 
 ## Local development
 
-Running the app locally, replace
+Running the app locally, replace:
 ```
 https://git.heroku.com/needlebush.git
 ```
-With http://localhost:8080
+
+With 
 ```
+http://localhost:8080
+```
+
 The node-mongodb-native/connection will time out in the server.js file after a bit of inactivity.
 This app is in a different project that is deployed to Heroku only.
 
 
-## Dynaforms
+## Setting up the Dynaforms
 
 Trying to use the [dynamic model driven forms example](https://angular.io/docs/ts/latest/cookbook/dynamic-form.html#!#top)
 in the Angular 2 cookbook in Ionic.
@@ -139,3 +171,25 @@ Solution_2 wont work becuase we don't know what the shape of the form will be.
 It looks like there is a blank form there already, just there are no elements in it.
 
 So what's next?
+
+The only [StackOverflow answer](http://stackoverflow.com/questions/38444778/formgroup-expects-a-formgroup-instance) of note gives this advice:
+- <div [formGroup]="form"> outside of a <form> tag
+- <form [formGroup]="form"> but the name of the property containing the FormGroup is loginForm therefore it should be <form [formGroup]="loginForm">
+- [formControlName]="dob" which passes the value of the property dob which doesn't exist. What you need is to pass the string dob like [formControlName]="'dob'" or simpler formControlName="dob"
+
+None of this is relevant.
+We may as well step through the control flow with our [rubber duckie](https://en.wikipedia.org/wiki/Rubber_duck_debugging):
+
+```
+<dynamic-form></dynamic-form> 
+```
+is the entry point to the dynamic-form-component.ts
+
+And there it is!  Rubber duckie does it again! 
+It should be:
+```
+<dynamic-form [questions]="questions"></dynamic-form>
+```
+No wonder there were no form elements, we weren't passing in any!
+
+
