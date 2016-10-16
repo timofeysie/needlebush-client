@@ -3,25 +3,36 @@
   <ion-title>
     Todo Roles
   </ion-title>
-  <ion-buttons end>
-    <button ion-button icon-only (click)="addTodo()"><ion-icon name="add"></ion-icon></button>
+  <ion-buttons start>
+    <button ion-button 
+      icon-only
+      (click)="addTodo()">
+      <ion-icon name="add"></ion-icon>
+    </button>
   </ion-buttons>
   <ion-buttons start>
-    <button ion-button icon-only (click)="logout()"><ion-icon name="power"></ion-icon></button>
+    <button ion-button 
+      icon-only 
+      (click)="logout()">
+      <ion-icon name="power"></ion-icon>
+    </button>
+  </ion-buttons>
+  <ion-buttons start>
+    <button ion-button 
+      icon-only 
+      (click)="gotoDynaforms()">
+      <ion-icon name="ion-compose">Forms</ion-icon>
+    </button>
   </ion-buttons>
  </ion-navbar>
 </ion-header>
 
 <ion-content>
-
   <ion-list no-lines>
-
     <ion-item-sliding *ngFor="let todo of todos">
-
       <ion-item>
       	{{todo.title}}
       </ion-item>
-
       <ion-item-options>
         <button ion-button color="danger" (click)="deleteTodo(todo)">
           <ion-icon name="trash"></ion-icon>
@@ -29,7 +40,5 @@
         </button>
       </ion-item-options>
     </ion-item-sliding>
-
   </ion-list>
-
 </ion-content>

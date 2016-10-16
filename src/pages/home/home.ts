@@ -6,6 +6,8 @@ import { LoadingController } from 'ionic-angular';
 import { Todos } from '../../providers/todos';
 import { Auth } from '../../providers/auth';
 import { LoginPage } from '../login-page/login-page';
+import { Dynaform }    from '../dynaform/dynaform';
+
 @Component({
   selector: 'home-page',
   templateUrl: 'home.html'
@@ -20,6 +22,10 @@ export class HomePage {
     public alertCtrl: AlertController, 
     public authService: Auth, 
     public loadingCtrl: LoadingController) {
+  }
+
+  gotoDynaforms() {
+    this.navCtrl.push(Dynaform);
   }
 
   ionViewDidLoad() {
