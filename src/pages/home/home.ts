@@ -7,6 +7,7 @@ import { Todos } from '../../providers/todos';
 import { Auth } from '../../providers/auth';
 import { LoginPage } from '../login-page/login-page';
 import { Dynaform }    from '../dynaform/dynaform';
+import { Nestedform } from '../nestedform/nestedform';
 
 @Component({
   selector: 'home-page',
@@ -24,8 +25,12 @@ export class HomePage {
     public loadingCtrl: LoadingController) {
   }
 
-  gotoDynaforms() {
+  gotoDynaform() {
     this.navCtrl.push(Dynaform);
+  }
+
+  gotoNestedform() {
+    this.navCtrl.push(Nestedform);
   }
 
   ionViewDidLoad() {

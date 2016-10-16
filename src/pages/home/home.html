@@ -5,23 +5,30 @@
   </ion-title>
   <ion-buttons start>
     <button ion-button 
+      icon-only 
+      (click)="gotoNestedform()">
+      <ion-icon name="ios-copy-outline"></ion-icon>
+    </button>
+  </ion-buttons>
+  <ion-buttons start>
+    <button ion-button 
+      icon-only 
+      (click)="gotoDynaform()">
+      <ion-icon name="ios-document-outline"></ion-icon>
+    </button>
+  </ion-buttons>
+  <ion-buttons start>
+    <button ion-button 
       icon-only
       (click)="addTodo()">
       <ion-icon name="add"></ion-icon>
     </button>
   </ion-buttons>
-  <ion-buttons start>
+  <ion-buttons end>
     <button ion-button 
       icon-only 
       (click)="logout()">
       <ion-icon name="power"></ion-icon>
-    </button>
-  </ion-buttons>
-  <ion-buttons start>
-    <button ion-button 
-      icon-only 
-      (click)="gotoDynaforms()">
-      <ion-icon name="ion-compose">Forms</ion-icon>
     </button>
   </ion-buttons>
  </ion-navbar>

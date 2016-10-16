@@ -46,8 +46,20 @@ http://localhost:8080
 The node-mongodb-native/connection will time out in the server.js file after a bit of inactivity.
 This app is in a different project that is deployed to Heroku only.
 
+## Setting up the Nested form
 
-## Setting up the Dynaforms
+We start by using the CLI again:
+```
+$ ionic g page nestedform
+```
+Add the imnport in src/app/app.module.ts:
+```
+import { Nestedform } from '../pages/nestedform/nestedform';
+```
+Add the page to the declarations and entryComponents arrays.
+Also add the import in home.ts and add a goto function.
+
+## Setting up the Dynaform
 
 Trying to use the [dynamic model driven forms example](https://angular.io/docs/ts/latest/cookbook/dynamic-form.html#!#top)
 in the Angular 2 cookbook in Ionic.
