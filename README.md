@@ -2,7 +2,17 @@
 
 This is the client to the [server program](http://www.joshmorony.com/creating-role-based-authentication-with-passport-in-ionic-2-part-1/) created by Ionic 2 guru Josh Morony.
 
-## Creating an Ionic model driven form
+The server is built with NodeJS, MongoDB, Express, and Passport with a API to 
+authenticate a user's role based on JWTs (JSON Web Tokens).
+
+Further development is focusing on creating a nested form which will generate a form type definition json file.
+This form type definition is basically a form title with any number of fields.
+This definition will then be used to create a dynamic model driven form with CRUD functionality.
+
+The form types will replace the todo list on the home page.
+Choosing one will let the user edit the definition.
+
+## Creating an Ionic model driven form layout
 
 The items are in a form that begins in dynamic-form.component.html.
 
@@ -58,6 +68,86 @@ import { Nestedform } from '../pages/nestedform/nestedform';
 ```
 Add the page to the declarations and entryComponents arrays.
 Also add the import in home.ts and add a goto function.
+
+Next, create the interface for the data type.
+The demo is a name and multiple addresses.
+We will have a name (of the form) and multiple inputs.
+The name scheme we have so far is nested-profile.interface.ts:
+```
+export interface NestedProfile {
+    name: string;
+    inputs: NestedInput[];
+}
+export interface NestedInput <T> {
+  value: T;
+  key: string;
+  label: string;
+  required: boolean;
+  order: number;
+  controlType: string;
+}
+```
+
+The NestedProfile has red squigglies under it with the tool tip:
+```
+[ts] Generic type 'NestedInput<T>' requires 1 type argument(s).
+interface NestedInput<T>
+```
+
+So this might be the right way to write it:
+```
+export interface NestedProfile <T> {
+    name: string;
+    inputs: T[];
+}
+```
+
+But this would replace the entire type of the object. 
+We want to just replace the type of a member. 
+Here's another idea:
+```
+export interface NestedProfile {
+    name: string;
+    inputs: NestedInput<any>[];
+}
+```
+
+Worth giving a try.
+
+The changes made from the customer.interface.ts demo:
+```
+Customer -> NestedProfile
+Address -> NestedInput
+addresses -> inputs
+```
+
+The old nested form had only two members:
+```
+street: string;
+postcode: string;
+```
+
+Our new model has:
+```
+value: T;
+key: string;
+label: string;
+required: boolean;
+order: number;
+controlType: string;
+```
+
+Probably don't need value at this point. 
+Infact, this whole idea needs re-thinking.
+
+We will just leave the customer & address page intact for now as a reference 
+and create a new page with a better naming scheme for the form type definition.
+
+Form type defition sounds too much like a DTD.
+
+Formtype is more succint.
+
+
 
 ## Setting up the Dynaform
 
