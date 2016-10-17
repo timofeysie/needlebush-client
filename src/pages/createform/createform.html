@@ -4,45 +4,60 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding
+  class="outer-content">
   <form [formGroup]="myForm" novalidate (ngSubmit)="save(myForm)">
-    <div class="form-group">
-      <label>Name</label>
-      <input type="text" class="form-control" formControlName="name">
-      <small *ngIf="!myForm.controls.name.valid" class="text-danger">
-          Name is required (minimum 5 characters).
-        </small>
-    </div>
-    <!--formtypes-->
-    <hr>
-    <div formArrayName="formtypes">
-      <div *ngFor="let address of myForm.controls.formtypes.controls; let i=index" class="panel panel-default">
-        <div class="panel-heading">
-          <span>Input {{i + 1}}</span>
-          <span class="glyphicon glyphicon-remove pull-right" *ngIf="myForm.controls.formtypes.controls.length > 1" (click)="removeAddress(i)"></span>
-        </div>
-        <div class="panel-body" [formGroupName]="i">
-          <!-- address directive -->
-          <formtype [group]="myForm.controls.formtypes.controls[i]"></formtype>
+    <ion-list>
+
+      <!-- Formdef title/name -->  
+      <ion-item>
+        <ion-label>Form title</ion-label>
+        <ion-input type="text" class="form-control" formControlName="name"></ion-input>
+        <small *ngIf="!myForm.controls.name.valid" class="text-danger">
+            Name is required (minimum 5 characters).
+          </small>
+      </ion-item>
+
+      <!--formtypes-->
+      <div formArrayName="formtypes">
+        <div *ngFor="let address of myForm.controls.formtypes.controls; let i=index" 
+          class="panel panel-default">
+          <ion-list-header
+            class="panel-heading">
+            <span>Input {{i + 1}}</span>
+            <span class="glyphicon glyphicon-remove pull-right" 
+            *ngIf="myForm.controls.formtypes.controls.length > 1" 
+            (click)="removeAddress(i)"></span>
+          </ion-list-header>
+          <div class="panel-body" [formGroupName]="i">
+            <!-- Formtypes array directive -->
+            <ion-item>
+              <formtype [group]="myForm.controls.formtypes.controls[i]"></formtype>
+            </ion-item>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="margin-20">
-      <a (click)="addFormtype()" style="cursor: default">
-        Add another input +
-      </a>
-    </div>
+      <!-- Controls -->
+      <div class="margin-20">
+        <a (click)="addFormtype()" style="cursor: default">
+          Add another input +
+        </a>
+      </div>
 
-    <div class="margin-20">
-      <button type="submit" class="btn btn-primary pull-right" [disabled]="!myForm.valid">Submit</button>
-    </div>
-    <div class="clearfix"></div>
+      <div class="margin-20">
+        <button type="submit" class="btn btn-primary pull-right" 
+          [disabled]="!myForm.valid">Submit</button>
+      </div>
+      <div class="clearfix"></div>
 
-    <div class="margin-20">
-      <div>myForm details:-</div>
-      <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
-      <pre>form value: <br>{{myForm.value | json}}</pre>
-    </div>
+      <!-- debugging info -->
+      <div class="margin-20">
+        <div>myForm details:-</div>
+        <pre>Is myForm valid?: <br>{{myForm.valid | json}}</pre>
+        <pre>form value: <br>{{myForm.value | json}}</pre>
+      </div>
+
+    </ion-list><!-- end form -->
   </form>
 </ion-content>

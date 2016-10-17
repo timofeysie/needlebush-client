@@ -14,14 +14,49 @@ Choosing one will let the user edit the definition.
 
 The main points for the dynamic model driven forms are:
 - forms are created from a json file format
-- there is data relating to the entire for, such as name, date of creation, etc.
+- there is data relating to the entire form, such as name, date of creation, disable sumnit until valid, etc.
 - the form model then has any number of inputs with a range of attributes like type, order, labels etc.
 - validation will also be included in the input form model
 - each text input field will be created with the same text input field component
 - if we need a different text box, then the definition for that will be added to the form model
 
+The form definition is held in app/pages/createform/formdef.interface.ts
 
-## Nested forms part II
+The definition of the input types is in app/forms/question-base.ts
+
+## Styling the forms
+
+On the [Sliding List](https://ionicframework.com/docs/v2/components/#sliding-list) demo
+There are grey areas with titles, and white content bars.
+We want to use this style for the forms.
+What are the ionic tags for this style?
+
+[Here is the source](https://github.com/driftyco/ionic-preview-app/blob/master/src/pages/lists/sliding/template.html) for that example.
+```
+<ion-content class="outer-content">
+  <ion-list>
+    <ion-list-header>Busters</ion-list-header>
+        <ion-item-sliding>
+          <ion-item>
+            <ion-avatar item-left>
+              <img src="assets/img/venkman.jpg">
+            </ion-avatar>
+            <h2>Venkman</h2>
+            <p>Back off man, I'm a scientist.</p>
+          </ion-item>
+```
+
+Our sections are less defined than that, and we don't need the sliding functionality.
+
+This currently is not working as expected.  Needs some more restructuring.
+First probably should make the inputs more appropriate.
+Like a selector for the input types.
+Let the user drag the sections to create the order,
+or at least a selector for the number, with the numbers pre-filled by the number of sections available.
+
+
+
+## Understanding the nested forms
 
 It's all about the form builder on this one. 
 Of the three functions it has, the last is the most mysterious.
@@ -37,7 +72,7 @@ Here is the name property:
 formBuilder.group({name: ['', [Validators.required, Validators.minLength(5)]]
 ```
 
-Now that's rockin.
+Now that's rockin'.
 
 Here comes the (simplified) nesting magic:
 ```
@@ -151,7 +186,7 @@ So our new sub-component has a problemo.
 Probably because the AddressComponent was not in the app.module.ts declarations array.
 Yep, that was it.  Time to commit before the next setp.
 
-## Break it down
+## Create the Createfrom component
 Merging the dynaform with the nested data model.
 
 Page name: createform
