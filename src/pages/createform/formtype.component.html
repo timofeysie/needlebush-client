@@ -1,0 +1,53 @@
+<div [formGroup]="formtypeForm">
+
+    <div class="form-group col-xs-6">
+        <label>value</label>
+        <input type="text" class="form-control" formControlName="value">
+        <small [hidden]="formtypeForm.controls.value.valid" class="text-danger">
+            value is required
+        </small>
+    </div>
+
+    <div class="form-group col-xs-6">
+        <label>key</label>
+        <input type="text" class="form-control" formControlName="key">
+        <small [hidden]="formtypeForm.controls.key.valid" class="text-danger">
+            key is required
+        </small>
+    </div>
+
+    <div class="form-group col-xs-6">
+        <label>label</label>
+        <input type="text" class="form-control" formControlName="label">
+        <small [hidden]="formtypeForm.controls.label.valid" class="text-danger">
+            label is required
+        </small>
+    </div>
+
+    <!-- change to bool -->
+    <div class="form-group col-xs-6">
+        <label>required</label>
+        <input type="text" class="form-control" formControlName="required">
+        <small [hidden]="formtypeForm.controls.required.valid" class="text-danger">
+            required is required
+        </small>
+    </div>
+
+    <!-- whats the input type for order? -->
+    <div class="form-group col-xs-6">
+        <label>order</label>
+        <input type="text" class="form-control" formControlName="order">
+        <small [hidden]="formtypeForm.controls.order.valid" class="text-danger">
+            order is required
+        </small>
+    </div>
+
+    <!-- current allowed values: textbox, dropdown -->
+    <div class="form-group col-xs-6">
+        <label>controlType</label>
+        <input type="text" class="form-control" formControlName="controlType">
+        <small [hidden]="formtypeForm.controls.controlType.valid" class="text-danger">
+            controlType is required
+        </small>
+    </div>
+</div>

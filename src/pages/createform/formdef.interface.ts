@@ -1,13 +1,13 @@
-export interface NestedProfile {
+export interface Formdef {
     name: string;
-    inputs: NestedInput[];
+    addresses: Formtype[];
 }
 
-export interface NestedInput {
+export interface Formtype {
   value: any;
   key: string;
   label: string;
   required: boolean;
   order: number;
   controlType: string;
-}
+}   

@@ -7,8 +7,7 @@ import { Todos } from '../../providers/todos';
 import { Auth } from '../../providers/auth';
 import { LoginPage } from '../login-page/login-page';
 import { Dynaform }    from '../dynaform/dynaform';
-import { Nestedform } from '../nestedform/nestedform';
-import { Nestedmodel } from '../nestedmodel/nestedmodel';
+import { Createform } from '../createform/createform';
 
 @Component({
   selector: 'home-page',
@@ -30,12 +29,8 @@ export class HomePage {
     this.navCtrl.push(Dynaform);
   }
 
-  gotoNestedform() {
-    this.navCtrl.push(Nestedform);
-  }
-
-  gotoNestedmodel() {
-    this.navCtrl.push(Nestedmodel);
+  gotoCreateform() {
+    this.navCtrl.push(Createform);
   }
 
   ionViewDidLoad() {

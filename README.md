@@ -12,6 +12,14 @@ This definition will then be used to create a dynamic model driven form with CRU
 The form types will replace the todo list on the home page.
 Choosing one will let the user edit the definition.
 
+The main points for the dynamic model driven forms are:
+- forms are created from a json file format
+- there is data relating to the entire for, such as name, date of creation, etc.
+- the form model then has any number of inputs with a range of attributes like type, order, labels etc.
+- validation will also be included in the input form model
+- each text input field will be created with the same text input field component
+- if we need a different text box, then the definition for that will be added to the form model
+
 
 ## Nested forms part II
 
@@ -146,9 +154,12 @@ Yep, that was it.  Time to commit before the next setp.
 ## Break it down
 Merging the dynaform with the nested data model.
 
-Dynaform
+Page name: createform
+
+Formdef
 - name
 - input: Formtype []
+
 Formtype
 - value
 - key (key: 'firstName', label: 'First name')
@@ -168,6 +179,77 @@ textbox json:
 }
 ```
 
+The file changes:
+- copy nestedmodel folder -> creatform folder
+- address.component.html -> formtype.component.html
+- address.component.ts -> formtype.component.ts
+- nestedmodel.html -> createform.html
+- nestedmodel.scss -> createform.css
+- nestedmodel.ts -> createform.ts
+
+Inside the file changes
+- address.component.html -> formtype.component.html
+adressForm -> 
+
+- address.component.ts -> formtype.component.ts
+    selector: 'address', -> formtype
+    templateUrl: './address.component.html', -> formtype.component.html
+export class AddressComponent { -> FormtypeComponent
+    @Input('group')
+    public adressForm: FormGroup; -> formtypeForm: FormGroup;
+
+- app.module.ts
+AddressComponent -> FormtypeComponent
+-> import { FormtypeComponent } from '../pages/createform/formtype.component';
+-> and in declarations
+  selector: 'page-nestedmodel', -> 'page-creatform',
+  templateUrl: 'nestedmodel.html' -> 'creatform.html'
+export class Nestedmodel -> Createform
+ngOnInit() {
+...
+            addresses: this._fb.array([ -> formtype: this._fb.array([
+                this.initAddress(), -> this.initFormtype(),
+
+- nestedmodel.html -> createform.html
+
+- nestedmodel.scss -> createform.css
+
+- nestedmodel.ts -> createform.ts
+import { AddressComponent } from './address.component';
+->    { FormtypeComponent } from './formtype.component';
+
+addAddress() { -> addAFormtype() {
+  addresses -> formtypes
+
+removeAddress(i: number) { -> removeFormtype(i: number) {
+
+It's a little strange, but 
+in formtype.component.ts
+addressForm -> formtypeForm
+
+After all that, and getting rid of the nestedform and nestedmodel pages and components,
+we have this error:
+```
+error_handler.js:47 
+EXCEPTION: Error in ./HomePage class HomePage - 
+inline template:8:6 caused by: No component factory found for Createform
+```
+
+That was just the home.ts configuration.
+
+Next error, is of course, the control part of the form:
+```
+error_handler.js:47 EXCEPTION: Error in ./Createform class Createform - 
+inline template:16:9 caused by: 
+Cannot find control with name: 'formtypes'
+```
+Now is it formtype or formtypes?
+The array is called formtypes, which is an array of formtype.
+In the createform.ts, it had to be created liek this:
+```
+formtypes: this._fb.array([this.initFormtype() ...])
+```
+Then we are all good.  Time to style the form.
 
 ## Creating an Ionic model driven form layout
 

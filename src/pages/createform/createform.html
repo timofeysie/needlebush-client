@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>nestedmodel</ion-title>
+    <ion-title>Create Form</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -13,23 +13,24 @@
           Name is required (minimum 5 characters).
         </small>
     </div>
-    <!--addresses-->
-    <div formArrayName="addresses">
-      <div *ngFor="let address of myForm.controls.addresses.controls; let i=index" class="panel panel-default">
+    <!--formtypes-->
+    <hr>
+    <div formArrayName="formtypes">
+      <div *ngFor="let address of myForm.controls.formtypes.controls; let i=index" class="panel panel-default">
         <div class="panel-heading">
-          <span>Address {{i + 1}}</span>
-          <span class="glyphicon glyphicon-remove pull-right" *ngIf="myForm.controls.addresses.controls.length > 1" (click)="removeAddress(i)"></span>
+          <span>Input {{i + 1}}</span>
+          <span class="glyphicon glyphicon-remove pull-right" *ngIf="myForm.controls.formtypes.controls.length > 1" (click)="removeAddress(i)"></span>
         </div>
         <div class="panel-body" [formGroupName]="i">
           <!-- address directive -->
-          <address [group]="myForm.controls.addresses.controls[i]"></address>
+          <formtype [group]="myForm.controls.formtypes.controls[i]"></formtype>
         </div>
       </div>
     </div>
 
     <div class="margin-20">
-      <a (click)="addAddress()" style="cursor: default">
-        Add another address +
+      <a (click)="addFormtype()" style="cursor: default">
+        Add another input +
       </a>
     </div>
 

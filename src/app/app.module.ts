@@ -11,9 +11,8 @@ import { Auth }        from '../providers/auth';
 import { Dynaform }    from '../pages/dynaform/dynaform';
 import { DynamicFormComponent }         from '../forms/dynamic-form.component';
 import { DynamicFormQuestionComponent } from '../forms/dynamic-form-question.component';
-import { Nestedform } from '../pages/nestedform/nestedform';
-import { Nestedmodel } from '../pages/nestedmodel/nestedmodel';
-import { AddressComponent } from '../pages/nestedmodel/address.component';
+import { FormtypeComponent } from '../pages/createform/formtype.component';
+import { Createform } from '../pages/createform/createform';
 
 @NgModule({
   declarations: [
@@ -24,9 +23,8 @@ import { AddressComponent } from '../pages/nestedmodel/address.component';
     Dynaform,
     DynamicFormComponent, 
     DynamicFormQuestionComponent,
-    Nestedform,
-    Nestedmodel,
-    AddressComponent
+    FormtypeComponent,
+    Createform
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -38,8 +36,7 @@ import { AddressComponent } from '../pages/nestedmodel/address.component';
     LoginPage,
     SignupPage,
     Dynaform,
-    Nestedform,
-    Nestedmodel
+    Createform
   ],
   providers: [
     Storage, 
