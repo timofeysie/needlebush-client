@@ -12,6 +12,163 @@ This definition will then be used to create a dynamic model driven form with CRU
 The form types will replace the todo list on the home page.
 Choosing one will let the user edit the definition.
 
+
+## Nested forms part II
+
+It's all about the form builder on this one. 
+Of the three functions it has, the last is the most mysterious.
+- group: construct a new form group. E.g. our myForm and address model
+- array: construct a new form array. E.g. our customer's list of addresses
+- control: construct a new form control.
+
+They all have the same API:
+function(default-value, validator/array-of-validators, async-validator)
+
+Here is the name property:
+```
+formBuilder.group({name: ['', [Validators.required, Validators.minLength(5)]]
+```
+
+Now that's rockin.
+
+Here comes the (simplified) nesting magic:
+```
+addresses: formBuilder.array([initAddress()])
+```
+
+Blam!  The initAddress function returns another formBuilder:
+```
+group({ street: ['', Validators.required], postcode: ['']
+```
+
+Street required, postcode, is like, whatever you want it to be.
+
+The magic happens when we add an address:
+```
+    const control = <FormArray>this.myForm.controls['addresses'];
+    control.push(this.initAddress());
+```
+
+[Shazam!](https://angular.io/docs/ts/latest/guide/forms.html)
+
+It's in the template where the shizm hit's the fasm:
+```
+<small *ngIf="!myForm.controls.name.valid">
+    Name is required (minimum 5 characters).
+</small>
+```
+
+That's the validation in action.  If you don't know, then pay attention.
+
+This is what's called a ```microsyntax```
+```
+<div formArrayName="addresses">
+  <div *ngFor="let address of myForm.controls.addresses.controls; let i=index">
+```
+
+Double up on the control, damn!  No you didn't!
+
+Here's some more of that good validational stuff:
+```
+<label>street</label>
+<input type="text" formControlName="street">
+<small [hidden]="myForm.controls.addresses.controls[i].controls.street.valid">
+    Street is required
+</small>
+```
+
+All right trend setters and party people.  It's getting real now.
+- ```formControlName``` is an <i>directive</i> baby, the form control name!
+- ```formArrayName``` ditto, but fer dem nested biatches.
+- ```formGroupName``` array with the index number as the group name thus index i = formGroupName
+
+Now, for our next number, we will split out the nested part.
+
+So we need to get our naming under control pronto.
+
+Dynaform
+- name
+- input
+Formtype
+- value
+- key
+- label
+- required
+- order
+- controlType
+
+
+### Dynamic model driven validation
+
+Remeber the foolish validation for name:
+```
+name: ['', [Validators.required, Validators.minLength(5)]
+```
+
+We will need to think about how to include this info in our json.
+
+Here be the textbox json:
+```
+{
+    key: 'firstName',
+    label: 'Name',
+    value: '',
+    required: true,
+    order: 1
+}
+```
+
+This will be the way the nested form will have to save its created data.
+
+It will get messy if we just start adding validation methods.
+They will get extreme, such as conditional questions,
+connected validation (like two password fields that must match).
+
+Now that I think about it, there was a talk at ngSyd which dealt with that.
+
+Anyhow, one step at a time.
+First, the more orderly nested model driven form sample from scotch.io.
+
+We'll cakk that nestedmodel.
+
+After adding the page in the usual manner, and then adding [the demo code](https://scotch.io/tutorials/how-to-build-nested-model-driven-forms-in-angular-2),
+we are faced with this error:
+```
+Can't bind to 'group' since it isn't a known property of 'address'. ("div class="panel-body" [formGroupName]="i">
+    <!-- address directive -->
+    <address [ERROR ->][group]="myForm.controls.addresses.controls[i]"></address>
+```
+So our new sub-component has a problemo.
+
+Probably because the AddressComponent was not in the app.module.ts declarations array.
+Yep, that was it.  Time to commit before the next setp.
+
+## Break it down
+Merging the dynaform with the nested data model.
+
+Dynaform
+- name
+- input: Formtype []
+Formtype
+- value
+- key (key: 'firstName', label: 'First name')
+- label
+- required
+- order
+- controlType (textbox, dropdown, etc)
+
+textbox json:
+```
+{
+    key: 'firstName',
+    label: 'Name',
+    value: '',
+    required: true,
+    order: 1
+}
+```
+
+
 ## Creating an Ionic model driven form layout
 
 The items are in a form that begins in dynamic-form.component.html.

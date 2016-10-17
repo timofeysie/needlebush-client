@@ -8,6 +8,7 @@ import { Auth } from '../../providers/auth';
 import { LoginPage } from '../login-page/login-page';
 import { Dynaform }    from '../dynaform/dynaform';
 import { Nestedform } from '../nestedform/nestedform';
+import { Nestedmodel } from '../nestedmodel/nestedmodel';
 
 @Component({
   selector: 'home-page',
@@ -31,6 +32,10 @@ export class HomePage {
 
   gotoNestedform() {
     this.navCtrl.push(Nestedform);
+  }
+
+  gotoNestedmodel() {
+    this.navCtrl.push(Nestedmodel);
   }
 
   ionViewDidLoad() {
