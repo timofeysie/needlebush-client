@@ -24,6 +24,98 @@ The form definition is held in app/pages/createform/formdef.interface.ts
 
 The definition of the input types is in app/forms/question-base.ts
 
+## Using a select input for form-type components
+
+We want to provide a list of available input types for the create form page.
+That means adding that to the createform/formtype.component template.
+The create form page is a hardwired way to create a dynamic form.
+The formdef.interface.ts file is the starting point for changes to that form model.
+
+The current member is:
+```
+controlType: string;
+```
+
+It should be:
+```
+controlType: string [];
+```
+
+As noted above the create from controlType is different from the dynamic form controlType.
+The dynamic controlType is tied to the types of widgets it creates in the template switch block.
+If the controlType == textbox, it create an input field.
+If the controlType == dropdown, then it creates a select.
+
+So it is this functionality that we want to extend to the create form page.
+Actually, I'm just thinking out loud here.  I'm not sure what the best way to do this is.
+Is it a good idea to have the create form interface have an array where the dynamic form has a single string?
+I'm not sure.  It might be a good idea to try that for now.
+
+In createform.ts, controlType is used like this:
+```
+initFormtype() {
+        return this._fb.group({
+          ...
+            controlType: ['',Validators.required]
+```
+
+However, this was derived from the nested form example on scotch.io.
+We molded it to the model in forms/question-base.ts:
+```
+export class QuestionBase<T>{
+  ...
+  controlType: string;
+  constructor(options: {
+    ...
+      controlType?: string
+    } = {}) {
+      ...
+    this.controlType = options.controlType || '';
+``` 
+
+To keep things [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), 
+we shouldn't have multiple places where the same type is defined.
+The page linked to above says  
+    "Every piece of knowledge must have a single, unambiguous, authoritative representation within a system".
+In this case, where do we hardwire the choices of indput widget?
+To avoid having multiple places where the string can be used, we need a constant or enum type.
+
+What do enums look like in [TypeScript](https://www.typescriptlang.org/docs/handbook/enums.html)?
+```
+const enum InputType {
+    textbox,
+    dropdown
+}
+```
+
+Then use it like this:
+```
+this.controlType = InputType.textbox;
+```
+
+Then we import this into the QuestionBase as use it like this:
+```
+  ...
+  controlType: InputType;
+  constructor(options: {
+      ...
+      controlType?: InputType
+    } = {}) {
+    ...
+    this.controlType = InputType.controlType || '';
+```
+
+The last line is not going to work.
+
+If it did, we would then use the enum like this:
+```
+export class TextboxQuestion extends QuestionBase<string> {
+  controlType = InputType.textbox;
+```
+
+To be continues...
+
+
 ## Styling the forms
 
 On the [Sliding List](https://ionicframework.com/docs/v2/components/#sliding-list) demo

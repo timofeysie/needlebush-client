@@ -1,3 +1,4 @@
+import { InputType } from './input-types';
 /**
  * The object model that describes all scenarios needed by the form functionality.
  * TextboxQuestion and DropdownQuestion are derived from this class.
