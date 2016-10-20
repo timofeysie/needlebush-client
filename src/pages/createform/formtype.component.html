@@ -60,9 +60,14 @@
     <!-- current allowed values: textbox, dropdown -->
     <ion-item class="form-group col-xs-6">
         <ion-label>controlType</ion-label>
-        <ion-input type="text" 
-            class="form-control"    
-            formControlName="controlType"></ion-input>
+
+        <!--<ion-select type="select" 
+            class="form-control"  
+            [formControlName]="controlType">
+            <ion-option *ngFor="let opt of inputTypes" 
+            [value]="opt.key">{{opt.value}}</ion-option>
+        </ion-select>-->
+
         <small [hidden]="formtypeForm.controls.controlType.valid" 
             class="text-danger">
             controlType is required

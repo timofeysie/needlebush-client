@@ -7,6 +7,7 @@ import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { FormtypeComponent } from './formtype.component';
 import { Formdef } from './formdef.interface';
+import { InputTypes } from '../../forms/input-types';
 
 @Component({
   selector: 'createform',
@@ -14,7 +15,8 @@ import { Formdef } from './formdef.interface';
 })
 export class Createform {
   public myForm: FormGroup;
-
+  public inputTypes = InputTypes; 
+  
   constructor(
     public navCtrl: NavController,
     private _fb: FormBuilder) {}

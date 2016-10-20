@@ -113,7 +113,78 @@ export class TextboxQuestion extends QuestionBase<string> {
   controlType = InputType.textbox;
 ```
 
-To be continues...
+[This question](http://stackoverflow.com/questions/35923744/pass-enums-in-angular2-view-templates) 
+has a good idea on how to use enums in an Angular 2 template.
+SO: Create a property for your enum on the parent component to your component class and assign the enum to it, then reference that property in your template.
+```
+export class Parent {
+    public dropdownTypes = DropdownType;        
+}
+```
+Child class:
+```
+export class Dropdown {       
+    @Input() public set dropdownType(value: any) {
+        console.log(value);
+    };
+}
+```
+This allows you to enumerate the enum as expected in your template:
+```
+<div class="Dropdown" dropdownType="dropdownTypes.instrument"></div>
+```
+This is how it gets its context. 
+
+So in our case, createform.ts is the parent:
+```
+import { InputTypes } from '../../forms/input-types';
+...
+public inputTypes = InputTypes; 
+```
+
+formtype.component.ts is the chile (slight return)?
+```
+    @Input() public set inputTypes(value: any) {
+        console.log(value);
+    };
+```
+
+And in the formtype.component.html:
+```
+<ion-select type="select" 
+    class="form-control"  
+    [formControlName]="controlType">
+    <ion-option *ngFor="let opt of inputTypes" 
+    [value]="opt.key">{{opt.value}}</ion-option>
+</ion-select>
+```
+
+A big problem is I don't understand this @Input set fn() {} syntax.
+And, the error:
+```
+Unhandled Promise rejection: Template parse errors:
+Can't bind to 'group' since it isn't a known property of 'formtype'. ("
+<!-- Formtypes array directive -->
+<ion-item>
+  <formtype [ERROR ->][group]="myForm.controls.formtypes.controls[i]"></formtype>
+</ion-item>
+```
+
+So does that mean there is a problem in the formtype.component, so it can't be compiled and used in the createform?
+If we roll back those changes one by one, we should be able to tell where it is broken.
+If we remove the @Input statement in formtype.component.ts, then the app works.
+
+So the weekend is coming up.  Who wants to guess if we will be reading [this part](https://angular.io/docs/ts/latest/cookbook/component-communication.html) of the Angular 2 docs?
+Despite that link which says component communication, the title is component interaction.
+
+In the cheatsheet it says this:
+```
+@Input() myProperty;	
+Declares an input property that you can update via property binding 
+(example: <my-cmp [myProperty]="someExpression">).
+```
+
+The next mystery to be solved.  Stay tuned.
 
 
 ## Styling the forms

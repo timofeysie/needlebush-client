@@ -9,5 +9,5 @@ export interface Formtype {
   label: string;
   required: boolean;
   order: number;
-  controlType: string[];
+  controlType: string;
 }   
