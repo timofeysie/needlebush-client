@@ -184,38 +184,91 @@ Declares an input property that you can update via property binding
 (example: <my-cmp [myProperty]="someExpression">).
 ```
 
-The next mystery to be solved.  Stay tuned.
+Here are some notes on input properties.
 
 
-## Styling the forms
-
-On the [Sliding List](https://ionicframework.com/docs/v2/components/#sliding-list) demo
-There are grey areas with titles, and white content bars.
-We want to use this style for the forms.
-What are the ionic tags for this style?
-
-[Here is the source](https://github.com/driftyco/ionic-preview-app/blob/master/src/pages/lists/sliding/template.html) for that example.
+### input property setter to intercept and act upon a value from the parent.
 ```
-<ion-content class="outer-content">
-  <ion-list>
-    <ion-list-header>Busters</ion-list-header>
-        <ion-item-sliding>
-          <ion-item>
-            <ion-avatar item-left>
-              <img src="assets/img/venkman.jpg">
-            </ion-avatar>
-            <h2>Venkman</h2>
-            <p>Back off man, I'm a scientist.</p>
-          </ion-item>
+@Input() set name(name: string) {
+    this._name = (name && name.trim()) || '<no name set>';
+}
+get name() { return this._name; }
 ```
 
-Our sections are less defined than that, and we don't need the sliding functionality.
+Here is breaking it down as a parent child with two shared values example.
+parent
+```
+@Component({
+  selector: 'parent',
+  template: `
+    <button (click)="newMinor()">New minor version</button>
+    <button (click)="newMajor()">New major version</button>
+    <child [major]="major" [minor]="minor"></child>`
+})
+export class ParentComponent {
+  major: number = 1;
+  minor: number = 23;
+  newMinor() { this.minor++; }
+  newMajor() { this.major++; this.minor = 0; }
+}
+```
 
-This currently is not working as expected.  Needs some more restructuring.
-First probably should make the inputs more appropriate.
-Like a selector for the input types.
-Let the user drag the sections to create the order,
-or at least a selector for the number, with the numbers pre-filled by the number of sections available.
+child
+```
+@Component({
+  selector: 'child',
+  template: `<h3>Version {{major}}.{{minor}}</h3>`
+})
+export class ChildComponent implements OnChanges {
+  @Input() major: number;
+  @Input() minor: number;
+}
+```
+
+### The child with EventEmitter property
+The parent binds to the child's EventEmitter property is an output property, 
+typically adorned with an @Output decoration as seen in this VoterComponent.
+Clicking a button triggers emission of a true or false (the boolean payload).
+The parent VoteTakerComponent binds an event handler (onVoted) that responds 
+to the child event payload ($event) and updates a counter.
+The framework passes the event argument — represented by $event — to the handler method, 
+and the method processes it
+```
+@Component({
+  selector: 'vote-taker', // PARENT
+  template: `
+    <h2>Should mankind colonize the Universe?</h2>
+    <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
+    <my-voter *ngFor="let voter of voters"
+      [name]="voter"
+      (onVoted)="onVoted($event)">
+    </my-voter>
+  `
+})
+export class VoteTakerComponent {
+  agreed = 0;
+  disagreed = 0;
+  voters = ['Mr. IQ', 'Ms. Universe', 'Bombasto'];
+  onVoted(agreed: boolean) {
+    agreed ? this.agreed++ : this.disagreed++;
+  }
+}
+@Component({
+  selector: 'my-voter', // CHILD
+  template: `<h4>{{name}}</h4>
+    <button (click)="vote(true)"  [disabled]="voted">Agree</button>
+    <button (click)="vote(false)" [disabled]="voted">Disagree</button>`
+})
+export class VoterComponent {
+  @Input()  name: string;
+  @Output() onVoted = new EventEmitter<boolean>();
+  voted = false;
+  vote(agreed: boolean) {
+    this.onVoted.emit(agreed);
+    this.voted = true;
+  }
+}
+```
 
 
 
