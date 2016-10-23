@@ -1,17 +1,18 @@
 <div>
   <h3>Form</h3>
-  <form  *ngIf="form" (ngSubmit)="onSubmit()" 
-         [formGroup]="form">
+  <form  *ngIf="form" 
+    (ngSubmit)="onSubmit()" 
+    [formGroup]="form">
     <ion-list *ngFor="let question of questions" 
-         class="form-row">
-        <ion-item>
-          <df-question [question]="question" 
-                       [form]="form"></df-question>
-        </ion-item>
+      class="form-row">
+      <ion-item>
+        <df-question [question]="question" 
+          [form]="form"></df-question>
+      </ion-item>
     </ion-list>
     <div class="form-row">
       <button type="submit" 
-              [disabled]="!form.valid">Save</button>
+        [disabled]="!form.valid">Save</button>
     </div>
   </form>
   <div *ngIf="payLoad" 

@@ -270,6 +270,26 @@ export class VoterComponent {
 }
 ```
 
+### template reference variable for the child element
+then reference that variable within the parent template 
+```
+@Component({
+  selector: 'countdown-parent-lv',
+  template: `
+  <h3>Countdown to Liftoff (via local variable)</h3>
+  <button (click)="timer.start()">Start</button>
+  <button (click)="timer.stop()">Stop</button>
+  <div class="seconds">{{timer.seconds}}</div>
+  <countdown-timer #timer></countdown-timer>
+  `,
+  styleUrls: ['demo.css']
+})
+```
+ local variable (#timer) on the tag (<countdown-timer>) representing the child component. 
+ That gives us a reference to the child component itself and the ability to access any of 
+ its properties or methods from within the parent template.
+
+
 
 
 ## Understanding the nested forms

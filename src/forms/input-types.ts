@@ -1,4 +1,4 @@
 export enum InputTypes {
     textbox = 0,
-    dropdown = 1
+    dropdown = 1,
 }

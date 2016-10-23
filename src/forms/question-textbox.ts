@@ -1,5 +1,5 @@
 import { QuestionBase } from './question-base';
-import { InputType } from './input-types';
+import { InputTypes } from './input-types';
 /**
  * TextboxQuestion supports multiple html5 types like text, email, url etc via the type property.
  */

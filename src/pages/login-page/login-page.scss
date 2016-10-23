@@ -1,6 +1,19 @@
 .ios, .md {
 
 	login-page {
+
+		.half-width {
+			max-width: 50%;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+		}
+
+		.upper {
+			display:flex;
+			flex-direction:row;
+			height:30%;
+		}
 	 
 	 	ion-content {
 	 		background-color: map-get($colors, secondary);

@@ -22,5 +22,4 @@ export class Dynaform {
   ionViewDidLoad() {
     console.log('Hello Dynaform Page');
   }
-
 }
