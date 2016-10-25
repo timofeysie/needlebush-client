@@ -8,9 +8,14 @@ import { Createform } from './createform';
     templateUrl: './formtype.component.html',
 })
 export class FormtypeComponent {
-    @Input('group')
+
+    @Input('group') 
+
     // @Input() public set inputTypes(value: any) {
     //     console.log(value);
     // };
+    
+    public inputTypes = ['textbox','dropdown'];
+
     public formtypeForm: FormGroup;
 }

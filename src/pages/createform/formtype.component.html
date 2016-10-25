@@ -1,4 +1,5 @@
-<div [formGroup]="formtypeForm">
+<div *ngIf="myForm"
+    [formGroup]="formtypeForm">
 
     <ion-item class="form-group col-xs-6">
         <ion-label>value</ion-label>
@@ -61,12 +62,12 @@
     <ion-item class="form-group col-xs-6">
         <ion-label>controlType</ion-label>
 
-        <!--<ion-select type="select" 
+        <ion-select type="select" 
             class="form-control"  
             [formControlName]="controlType">
             <ion-option *ngFor="let opt of inputTypes" 
             [value]="opt.key">{{opt.value}}</ion-option>
-        </ion-select>-->
+        </ion-select>
 
         <small [hidden]="formtypeForm.controls.controlType.valid" 
             class="text-danger">

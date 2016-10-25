@@ -74,7 +74,8 @@ export class DynamicFormQuestionComponent {
 }
 ```
 ### DynamicFormQuestionComponent Template
-```html<div [formGroup]="form">
+```html
+<div [formGroup]="form">
   <ion-label [attr.for]="question.key"
     floating>{{question.label}}</ion-label>
   <div [ngSwitch]="question.controlType">

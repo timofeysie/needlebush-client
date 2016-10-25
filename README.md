@@ -184,8 +184,65 @@ Declares an input property that you can update via property binding
 (example: <my-cmp [myProperty]="someExpression">).
 ```
 
-Here are some notes on input properties.
+It's time to get just a normal select in the create form page.
+Then, we can try and make it use an enum type for its values.
 
+Right now we are getting this error:
+```
+Error in ./FormtypeComponent class FormtypeComponent - inline template:0:5 caused by: 
+formGroup expects a FormGroup instance. Please pass one in.
+```
+
+SO: initializing your loginForm inside a .then method. Since it's an asynchronous action that gets performed at some time in the future, upon component initialization (both the class and the template) - value of loginForm is undefined, and ngFormModel doesn't recognize it as a form (hence the error).
+So if you move your loginForm initialization (this.loginForm = new ControlGroup(...)) outside .then in your constructor`, that should fix it.
+And in order to keep the functionality that you are trying to achieve, which is displaying user's email when it's returned as part of getCurrentUser() response, I would suggest you hide the form (or show some kind of loading state) before getCurrentUser returns. You already have a [hidden] = "welcome" specified on your <form> element that you can use.
+
+The solution last time was passing in the arrtibute:
+```
+<dynamic-form [questions]="questions"></dynamic-form>
+```
+
+The selector for form types is:
+```
+<formtype [group]="myForm.controls.formtypes.controls[i]"></formtype>
+```
+
+Another strange thing that's happening, is the format of this is a little strange:
+```
+    @Input('group')
+    public inputTypes = ['textbox','dropdown'];
+```    
+
+The 'textbox' is white, when it should be brown like the dropdown.
+This indicates a formatting error.  There are no red squiggles however.
+If we add a ; after the @Input('group'), then the textbox string turns brown, but there is a red squggle on the ;.
+The hint for that is: ```[ts] Declaration expected.```
+
+The original was this:
+```
+export class AddressComponent {
+    // we will pass in address from App component
+    @Input('group')
+    public adressForm: FormGroup;
+}
+```
+That is the same formatting, sans the comment.  SO what is it weird now?
+
+If we do this ```@Input('group') {}```, the textbox turns orange, but the red squiggly says ```[ts] '=' expected.```
+So what is it, an = or a declaration?
+group hasn't changed has it?
+
+When the app is run now there is no error, but there is not formtype form.
+
+There is also a strange error in the termianal or all places:
+```
+[21:43:58]  bundle dev update failed:  Maximum call stack size exceeded
+
+[21:43:58]  RangeError: Maximum call stack size exceeded
+    at deepClone (/Users/tim/angular/ionic/i2/crbawpii/client/node_modules/rollup/dist/rollup.js:163:2)
+    at deepClone (/Users/tim/angular/ionic/i2/crbawpii/client/node_modules/rollup/dist/rollup.js:165:18)
+...
+```
 
 ### input property setter to intercept and act upon a value from the parent.
 ```
