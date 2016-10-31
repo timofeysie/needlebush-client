@@ -64,9 +64,9 @@
 
         <ion-select type="select" 
             class="form-control"  
-            [formControlName]="controlType">
-            <ion-option *ngFor="let opt of inputTypes" 
-            [value]="opt.key">{{opt.value}}</ion-option>
+            formControlName="controlType">
+            <ion-option [value]="textbox">textbox</ion-option>
+            <ion-option [value]="dropdown">textbox</ion-option>
         </ion-select>
 
         <small [hidden]="formtypeForm.controls.controlType.valid" 

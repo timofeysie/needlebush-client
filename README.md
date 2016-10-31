@@ -193,9 +193,18 @@ Error in ./FormtypeComponent class FormtypeComponent - inline template:0:5 cause
 formGroup expects a FormGroup instance. Please pass one in.
 ```
 
-SO: initializing your loginForm inside a .then method. Since it's an asynchronous action that gets performed at some time in the future, upon component initialization (both the class and the template) - value of loginForm is undefined, and ngFormModel doesn't recognize it as a form (hence the error).
-So if you move your loginForm initialization (this.loginForm = new ControlGroup(...)) outside .then in your constructor`, that should fix it.
-And in order to keep the functionality that you are trying to achieve, which is displaying user's email when it's returned as part of getCurrentUser() response, I would suggest you hide the form (or show some kind of loading state) before getCurrentUser returns. You already have a [hidden] = "welcome" specified on your <form> element that you can use.
+SO: initializing your loginForm inside a .then method. 
+Since it's an asynchronous action that gets performed at some time in the future, 
+upon component initialization (both the class and the template) - value of loginForm is undefined, 
+and ngFormModel doesn't recognize it as a form (hence the error).
+So if you move your loginForm initialization (this.loginForm = new ControlGroup(...)) outside .then 
+in your constructor`, that should fix it.
+And in order to keep the functionality that you are trying to achieve, 
+which is displaying user's email when it's returned as part of getCurrentUser() response, 
+I would suggest you hide the form (or show some kind of loading state) before getCurrentUser returns. 
+You already have a [hidden] = "welcome" specified on your <form> element that you can use.
+
+We hid the form if there is no instance of it.  But still the error.
 
 The solution last time was passing in the arrtibute:
 ```
@@ -215,7 +224,8 @@ Another strange thing that's happening, is the format of this is a little strang
 
 The 'textbox' is white, when it should be brown like the dropdown.
 This indicates a formatting error.  There are no red squiggles however.
-If we add a ; after the @Input('group'), then the textbox string turns brown, but there is a red squggle on the ;.
+If we add a ; after the @Input('group'), then the textbox string turns brown, 
+but there is a red squggle on the ;.
 The hint for that is: ```[ts] Declaration expected.```
 
 The original was this:
@@ -228,7 +238,8 @@ export class AddressComponent {
 ```
 That is the same formatting, sans the comment.  SO what is it weird now?
 
-If we do this ```@Input('group') {}```, the textbox turns orange, but the red squiggly says ```[ts] '=' expected.```
+If we do this ```@Input('group') {}```, the textbox turns orange, 
+but the red squiggly says ```[ts] '=' expected.```
 So what is it, an = or a declaration?
 group hasn't changed has it?
 
@@ -237,115 +248,198 @@ When the app is run now there is no error, but there is not formtype form.
 There is also a strange error in the termianal or all places:
 ```
 [21:43:58]  bundle dev update failed:  Maximum call stack size exceeded
-
 [21:43:58]  RangeError: Maximum call stack size exceeded
     at deepClone (/Users/tim/angular/ionic/i2/crbawpii/client/node_modules/rollup/dist/rollup.js:163:2)
     at deepClone (/Users/tim/angular/ionic/i2/crbawpii/client/node_modules/rollup/dist/rollup.js:165:18)
 ...
 ```
 
-### input property setter to intercept and act upon a value from the parent.
+Despite those other two strange errors, you might have notices that the solution to this problem, 
+as before, was the correct tag attribute setup.
 ```
-@Input() set name(name: string) {
-    this._name = (name && name.trim()) || '<no name set>';
-}
-get name() { return this._name; }
+<formtype [group]="myForm.controls.formtypes.controls[i]"></formtype>
 ```
-
-Here is breaking it down as a parent child with two shared values example.
-parent
+Should be:
 ```
-@Component({
-  selector: 'parent',
-  template: `
-    <button (click)="newMinor()">New minor version</button>
-    <button (click)="newMajor()">New major version</button>
-    <child [major]="major" [minor]="minor"></child>`
-})
-export class ParentComponent {
-  major: number = 1;
-  minor: number = 23;
-  newMinor() { this.minor++; }
-  newMajor() { this.major++; this.minor = 0; }
-}
+<formtype [group]="formtypeForm.controls.formtypes.controls[i]"></formtype>
 ```
 
-child
+Then, the app will not break.  That feels a lot better.
+But, we are not out of the woods yet.
+The next error is:
 ```
-@Component({
-  selector: 'child',
-  template: `<h3>Version {{major}}.{{minor}}</h3>`
-})
-export class ChildComponent implements OnChanges {
-  @Input() major: number;
-  @Input() minor: number;
-}
+error_handler.js:47 EXCEPTION: Error in ./Createform class Createform - inline template:34:24 caused by: 
+Cannot read property 'controls' of undefined
 ```
 
-### The child with EventEmitter property
-The parent binds to the child's EventEmitter property is an output property, 
-typically adorned with an @Output decoration as seen in this VoterComponent.
-Clicking a button triggers emission of a true or false (the boolean payload).
-The parent VoteTakerComponent binds an event handler (onVoted) that responds 
-to the child event payload ($event) and updates a counter.
-The framework passes the event argument — represented by $event — to the handler method, 
-and the method processes it
+In the formtype.components.ts file, the second inputTypes has a red squiggly:
 ```
-@Component({
-  selector: 'vote-taker', // PARENT
-  template: `
-    <h2>Should mankind colonize the Universe?</h2>
-    <h3>Agree: {{agreed}}, Disagree: {{disagreed}}</h3>
-    <my-voter *ngFor="let voter of voters"
-      [name]="voter"
-      (onVoted)="onVoted($event)">
-    </my-voter>
-  `
-})
-export class VoteTakerComponent {
-  agreed = 0;
-  disagreed = 0;
-  voters = ['Mr. IQ', 'Ms. Universe', 'Bombasto'];
-  onVoted(agreed: boolean) {
-    agreed ? this.agreed++ : this.disagreed++;
-  }
-}
-@Component({
-  selector: 'my-voter', // CHILD
-  template: `<h4>{{name}}</h4>
-    <button (click)="vote(true)"  [disabled]="voted">Agree</button>
-    <button (click)="vote(false)" [disabled]="voted">Disagree</button>`
-})
-export class VoterComponent {
-  @Input()  name: string;
-  @Output() onVoted = new EventEmitter<boolean>();
-  voted = false;
-  vote(agreed: boolean) {
-    this.onVoted.emit(agreed);
-    this.voted = true;
-  }
+export class FormtypeComponent {
+    @Input('group') 
+    @Input() public set inputTypes(value: any) {
+        console.log(value);
+    };
+    public inputTypes = ['textbox','dropdown'];
+    public formtypeForm: FormGroup;
 }
 ```
-
-### template reference variable for the child element
-then reference that variable within the parent template 
+The mouseover info says:
 ```
-@Component({
-  selector: 'countdown-parent-lv',
-  template: `
-  <h3>Countdown to Liftoff (via local variable)</h3>
-  <button (click)="timer.start()">Start</button>
-  <button (click)="timer.stop()">Stop</button>
-  <div class="seconds">{{timer.seconds}}</div>
-  <countdown-timer #timer></countdown-timer>
-  `,
-  styleUrls: ['demo.css']
-})
+[ts] Duplicate identifier 'inputTypes'.
+[ts] Subsequent variable declarations must have the same type.  
+Variable 'inputTypes' must be of type 'any', but here has type 'string[]'.
+(property) FormtypeComponent.inputTypes: any
 ```
- local variable (#timer) on the tag (<countdown-timer>) representing the child component. 
- That gives us a reference to the child component itself and the ability to access any of 
- its properties or methods from within the parent template.
 
+So yeah, I understand the duplicate part.  
+But how do we set the value as an array of input types then?
+
+[This answer](http://stackoverflow.com/questions/38178280/how-can-i-pass-an-array-as-input-from-the-component-template) 
+recommends doing this:  wrap the property with [] otherwise it is not processed by Angular at all:
+```
+<my-component [data]="[1, 2, 'test']"></my-component>
+```
+
+So then how to compose our select input?
+```
+        <ion-select type="select" 
+            class="form-control"  
+            [formControlName]="controlType">
+            <ion-option [value]=['textbox','dropdown']>{{value}}</ion-option>
+        </ion-select>
+```
+
+or like this?:
+```
+<ion-option [inputTypes]=['textbox','dropdown']>{{value}}</ion-option>
+```
+
+The first one had a nameless template error, the second, this error:
+```
+directive_normalizer.js:92Uncaught Error: Template parse errors:
+Unexpected closing tag "ion-option" ("ormControlName]="controlType">
+            <ion-option [inputTypes]=['textbox','dropdown']>{{value}}[ERROR ->]</ion-option>
+        </ion-select>
+
+"): FormtypeComponent@67:69
+```
+
+Try this:
+```
+<ion-option [inputTypes]=['textbox','dropdown']></ion-option>
+```
+
+And it's back to the nameless error:
+```
+directive_normalizer.js:92Uncaught Error: Template parse errors:(…)
+```
+
+Trying this in formtype.component.ts
+```
+ @Input() inputTypes: any[];
+```
+And tis inthe formtype.component.html:
+```
+<ion-option [inputTypes]='inputTypes'></ion-option>
+```
+
+Causes this familiar error.
+```
+polyfills.js:3 Unhandled Promise rejection: Template parse errors:
+Can't bind to 'inputTypes' since it isn't a known property of 'ion-option'.
+1. If 'ion-option' is an Angular component and it has 'inputTypes' input, then verify that it is part of this module.
+2. If 'ion-option' is a Web Component then add 
+```
+
+That usually means the component is not configured in the app.module.ts file.
+But if we try and add that to the declarations array, we get the old huge error:
+```
+[ts] Argument of type '{ declarations: (typeof MyApp | typeof HomePage | typeof LoginPage | typeof SignupPage | typeof D...' is not assignable to parameter of type 'NgModule'.
+       Types of property 'declarations' are incompatible.
+         Type '(typeof MyApp | typeof HomePage | typeof LoginPage | typeof SignupPage | typeof Dynaform | typeof...' is not assignable to type '(any[] | Type<any>)[]'.
+           Type 'typeof MyApp | typeof HomePage | typeof LoginPage | typeof SignupPage | typeof Dynaform | typeof ...' is not assignable to type 'any[] | Type<any>'.
+             Type 'typeof InputTypes' is not assignable to type 'any[] | Type<any>'.
+               Type 'typeof InputTypes' is not assignable to type 'Type<any>'.
+                 Property 'apply' is missing in type 'typeof InputTypes'.
+import InputTypes
+```
+So what's up with that?  Something in InputTypes is not right.
+Well duh, that's are enum which we are trying to exclude right now.
+we should call that InputTypesEnum to distinguish it from the input types which is the value of the input.
+
+OK, nothing is working now.
+Time to get it working, and then start playing around with it.
+You can't do development on a broken app.
+So we rolled back the select to a normal hardwired type:
+```
+        <ion-select type="select" 
+            class="form-control"  
+            [formControlName]="controlType">
+            <ion-option [value]="textbox">textbox</ion-option>
+            <ion-option [value]="dropdown">textbox</ion-option>
+        </ion-select>
+```
+And also got rid of the @Input declaration in the component.
+
+And we STILL have an error:
+```
+error_handler.js:47 EXCEPTION: Error in ./Createform class Createform - inline template:34:24 caused by: 
+Cannot read property 'controls' of undefined
+```
+
+There is additional information in the stacktrace.
+Near the bottom of all that useful information, there is this:
+```
+polyfills.js:3 Uncaught 
+ViewWrappedError
+_nativeError
+:
+Error: Error in ./Createform class Createform - inline template:34:24 caused by: 
+Cannot read property 'controls' of undefined at ViewWrappedError.BaseError [as constructor] 
+(http://localhost:8100/build/main.js:1144:34) at ViewWrappedError.WrappedError [as constructor] 
+(http://localhost:8100/build/main.js:1173:16) at new ViewWrappedError (http://localhost:8100/build/main.js:5395:16) at _View_Createform2.DebugAppView._rethrowWithContext (http://localhost:8100/build/main.js:10286:23) at _View_Createform2.DebugAppView.detectChanges (http://localhost:8100/build/main.js:10272:18) at _View_Createform0.AppView.detectContentChildrenChanges (http://localhost:8100/build/main.js:10182:19) at _View_Createform0.detectChangesInternal (Createform.ngfactory.js:515:8) at _View_Createform0.AppView.detectChanges (http://localhost:8100/build/main.js:10164:14) at _View_Createform0.DebugAppView.detectChanges (http://localhost:8100/build/main.js:10269:44) at _View_Createform_Host0.AppView.detectViewChildrenChanges (http://localhost:8100/build/main.js:10190:19)
+message
+...
+```
+
+Even without that entire select input, we are getting that error, so something else must be wrong.
+But what?  It's in the create form component, that is shown in the error.
+Someone else had that error, in a comment on a tutorial page, with no answer four months ago.
+That was it.  No more hits on Google, so we are on our own with this one.
+
+If you click on the error handler line in the console, you get generated JavaScript code errors like this:
+```
+this._console.error("EXCEPTION: " + this._extractMessage(error));
+self.renderer.setBindingDebugInfo(self._el_15,'ng-reflect-formtype-form','[ERROR] Exception while trying to serialize the value');
+```
+Not particularly helpful.
+
+In create forms however, we still had some code from the enum select days:
+```
+  public inputTypes: any[]; 
+```
+
+Another problem in our code versus the example on Scotch.io was that we were not implementing OnInit.
+This would mean that thengOnInit was not being called?
+But the error still happens without it.
+
+Other than that, we added required to out controlType:
+```
+controlType: ['',Validators.required]
+``` 
+
+This was working at some point.  Before the enums.
+
+The error says "Cannot read property 'controls' of undefined", 
+so whatever is coming before controls is undefined.
+
+That is the sub-component of the create form component:
+```
+<formtype [group]="formtypeForm.controls.formtypes.controls[i]"></formtype>
+```
+
+So look at how that is being created next time. 
+Out of time today!
 
 
 
